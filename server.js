@@ -3,7 +3,7 @@ const app = express()
 app.use( express.json())
 
 const postRoute = require('./post/postRoute')
-app.use('/api/post',postRoute)
+app.use('/api/posts',postRoute)
 
 
 
