@@ -2,10 +2,6 @@ const router = require('express').Router()
 const db = require('../data/db')
 const sId = require('shortid').generate()
 
-
-
-
-
 router.post('/',(req,res)=>{
     const post = req.body
 
@@ -31,8 +27,8 @@ router.post('/',(req,res)=>{
 router.post('/:id/comments',(req,res)=>{
     const text = req.body
 
-    const {id} = req.params
-    text.id= id
+    const id = req.params.id
+    
 
     if(text.text){
       
@@ -53,10 +49,39 @@ router.post('/:id/comments',(req,res)=>{
 })
 
 
-
 router.get('/',(req,res)=>{
     db.find()
     .then((items)=>res.status(201).json(items))
+        .catch(() => res.status(500).json({ error: "The posts information could not be retrieved." }))
 })
+
+router.get('/:id',(req,res)=>{
+    db.findById(req.params.id)
+    .then(item=>res.status(201).json(item))
+        .catch(() => res.status(500).json({ error: "The posts information could not be retrieved." }))
+})
+
+
+router.get('/:id/comments',(req,res)=>{
+    db.findCommentById(req.params.id)
+    .then(item=>res.status(200).json(item))
+})
+
+router.get('/posts/:id',(req,res)=>{
+    db.findById(req.params.id)
+    .then((item)=>res.status(200).json(item))
+    .catch(()=>res.status(500).json({errorMessage:''}))
+})
+
+router.delete('/:id',(req,res)=>{
+    db.remove(req.params.id)
+    .then((item)=>res.status(200).json(item))
+    .catch((err)=>{
+        res.status(500).json({errorMessage:'item could not be found'})
+    })
+})
+
+
+
 
 module.exports = router
